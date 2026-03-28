@@ -1,119 +1,239 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Another Universe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Javas</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+*{margin:0;padding:0;box-sizing:border-box}
 
-  body {
-    height: 100vh;
-    background: radial-gradient(circle at bottom, #0b132b, #000);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Courier New', monospace;
-    color: #fff;
-  }
+body{
+  font-family:'Noto Sans JP', sans-serif;
+  height:100vh;
+  background:url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center/cover;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  cursor:none;
+}
 
-  /* Background bintang */
-  .stars {
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: url('https://www.transparenttextures.com/patterns/stardust.png');
-    animation: moveStars 80s linear infinite;
-    opacity: 0.4;
-  }
+/* CURSOR */
+.cursor{
+  width:50px;
+  height:50px;
+  background:url('https://i.imgur.com/dyMjhsM.png') no-repeat center/contain;
+  position:fixed;
+  pointer-events:none;
+  transform:translate(-50%,-50%) scaleX(-1);
+  z-index:999;
+  transition:transform 0.1s ease, filter 0.2s ease;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));
+}
 
-  @keyframes moveStars {
-    from { transform: translateY(0); }
-    to { transform: translateY(-600px); }
-  }
+.loader{
+  position:fixed;width:100%;height:100%;background:black;
+  display:flex;align-items:center;justify-content:center;
+  color:white;font-size:20px;z-index:1000;
+}
 
-  /* Gambar */
-  .image {
-    width: 180px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 0 20px rgba(255,255,255,0.2);
-    z-index: 1;
-  }
+body::before{
+  content:"";position:absolute;width:100%;height:100%;
+  backdrop-filter: blur(20px);background:rgba(0,0,0,0.5);
+}
 
-  /* Text */
-  .text {
-    position: relative;
-    font-size: 2rem;
-    border-right: 3px solid white;
-    padding-right: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    animation: blink 0.8s infinite;
-    text-shadow: 
-      0 0 5px rgba(255,255,255,0.3),
-      0 0 20px rgba(173,216,230,0.4);
-    z-index: 1;
-  }
+.container{
+  position:relative;z-index:2;text-align:center;
+  width:90%;max-width:350px;animation:fadeIn 1.2s ease;
+}
 
-  @keyframes blink {
-    50% { border-color: transparent; }
-  }
+.profile img{
+  width:110px;height:110px;border-radius:50%;
+  border:3px solid white;margin-bottom:10px;
+  animation:glow 2s infinite alternate;
+}
 
+@keyframes glow{
+  from{box-shadow:0 0 10px white}
+  to{box-shadow:0 0 25px white}
+}
+
+h1{color:white}
+p{color:#fff;margin-bottom:20px}
+
+/* BUTTON */
+.link{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px;margin:10px 0;border-radius:20px;
+  text-decoration:none;font-weight:bold;color:white;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border:1px solid rgba(255,255,255,0.2);
+  transition:0.3s;
+}
+
+/* BRAND COLOR */
+.link:nth-child(2){color:#E1306C}
+.link:nth-child(3){color:#1DB954}
+.link:nth-child(4){color:#25D366}
+.link:nth-child(5){color:#1877F2}
+.link:nth-child(6){color:#fff}
+.link:nth-child(7){color:#5865F2}
+
+.link:hover{
+  transform:scale(1.07);
+  background:rgba(255,255,255,0.25);
+  box-shadow:0 0 15px rgba(255,255,255,0.4);
+}
+
+canvas{position:absolute;top:0;left:0;z-index:1}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px)}
+  to{opacity:1; transform:translateY(0)}
+}
 </style>
 </head>
 
 <body>
 
-<div class="stars"></div>
+<div class="loader" id="loader">Loading...</div>
+<div class="cursor" id="cursor"></div>
+<canvas id="particles"></canvas>
 
-<img src="https://mysitus.vercel.app/kaguya.jpg" class="image">
-
-<div class="text" id="typing"></div>
-
-<!-- AUDIO -->
-<audio id="bg-music" loop>
-  <source src="https://files.catbox.moe/6xqz3n.mp3" type="audio/mpeg">
+<!-- MUSIC -->
+<audio id="music" loop>
+  <source src="https://files.catbox.moe/6q3x1b.mp3" type="audio/mpeg">
 </audio>
 
-<script>
-  const text = "maybe in another universe";
-  const el = document.getElementById("typing");
-  let charIndex = 0;
-  let isDeleting = false;
+<div class="container">
+  <div class="profile">
+    <img src="https://i.imgur.com/Ho4R7Ph.jpeg">
+    <h1>Javas</h1>
+    <p>フリーレン：旅の終わりの先へ</p>
+  </div>
 
-  function typeLoop() {
-    if (!isDeleting) {
-      el.textContent = text.substring(0, charIndex++);
-      if (charIndex > text.length) {
-        isDeleting = true;
-        setTimeout(typeLoop, 1500); // jeda sebelum hapus
-        return;
-      }
-    } else {
-      el.textContent = text.substring(0, charIndex--);
-      if (charIndex < 0) {
-        isDeleting = false;
-        setTimeout(typeLoop, 300); // jeda sebelum ketik lagi
-        return;
-      }
-    }
-    setTimeout(typeLoop, isDeleting ? 40 : 70);
+  <a class="link" href="https://www.instagram.com/javasrajagula14/?__pwa=1#" target="_blank">
+    <i class="fa-brands fa-instagram"></i> Instagram
+  </a>
+
+  <a class="link" href="https://open.spotify.com/playlist/2g1jFgBzMVW1fmHMqreV0s?si=5b14ac725db9426d" target="_blank">
+    <i class="fa-brands fa-spotify"></i> Spotify
+  </a>
+
+  <a class="link" href="https://wa.me/6285338123425" target="_blank">
+    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+  </a>
+
+  <a class="link" href="https://www.facebook.com/javas.265377" target="_blank">
+    <i class="fa-brands fa-facebook"></i> Facebook
+  </a>
+
+  <a class="link" href="https://github.com/javasrajagula" target="_blank">
+    <i class="fa-brands fa-github"></i> GitHub
+  </a>
+
+  <a class="link" href="https://discord.gg/74TPHMb8" target="_blank">
+    <i class="fa-brands fa-discord"></i> Discord
+  </a>
+
+  <iframe style="border-radius:12px;margin-top:10px"
+    src="https://open.spotify.com/embed/track/59hVbgr8rfYkDbHfr8RcGI"
+    width="100%" height="80">
+  </iframe>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById('loader').style.display = 'none';
+});
+
+/* CURSOR */
+const cursor = document.getElementById('cursor');
+let lastX = 0;
+
+document.addEventListener('mousemove', e=>{
+  cursor.style.left = (e.clientX - 6) + 'px';
+  cursor.style.top = (e.clientY - 6) + 'px';
+
+  if(e.clientX > lastX){
+    cursor.style.transform = "translate(-50%,-50%) scaleX(1)";
+  } else {
+    cursor.style.transform = "translate(-50%,-50%) scaleX(-1)";
   }
 
-  typeLoop();
+  lastX = e.clientX;
+});
 
-  // autoplay musik fix
-  const music = document.getElementById("bg-music");
-  document.body.addEventListener("click", () => {
-    music.play();
-  }, { once: true });
+/* PARTICLES */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+let maxParticles = window.innerWidth < 500 ? 25 : 50;
+let particles = [];
+
+for(let i=0;i<maxParticles;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2,
+    dx:(Math.random()-0.5),
+    dy:(Math.random()-0.5)
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle='white';
+    ctx.fill();
+    p.x+=p.dx;
+    p.y+=p.dy;
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* CURSOR TRAIL */
+const trails = [];
+for(let i=0;i<8;i++){
+  let t = document.createElement("div");
+  t.style.width = "8px";
+  t.style.height = "8px";
+  t.style.borderRadius = "50%";
+  t.style.background = "rgba(255,255,255,0.6)";
+  t.style.position = "fixed";
+  t.style.pointerEvents = "none";
+  t.style.zIndex = "998";
+  t.style.transition = "opacity 0.3s";
+  document.body.appendChild(t);
+  trails.push(t);
+}
+
+let trailIndex = 0;
+document.addEventListener("mousemove", e=>{
+  const t = trails[trailIndex];
+  t.style.left = e.clientX + "px";
+  t.style.top = e.clientY + "px";
+  t.style.opacity = "1";
+
+  setTimeout(()=>{ t.style.opacity = "0"; }, 100);
+  trailIndex = (trailIndex + 1) % trails.length;
+});
+
 </script>
 
 </body>
