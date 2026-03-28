@@ -22,14 +22,17 @@ body{
   cursor:none;
 }
 
+/* CURSOR */
 .cursor{
   width:50px;
   height:50px;
   background:url('https://i.imgur.com/dyMjhsM.png') no-repeat center/contain;
   position:fixed;
   pointer-events:none;
-  transform:translate(-50%,-50%);
+  transform:translate(-50%,-50%) scaleX(-1);
   z-index:999;
+  transition:transform 0.1s ease, filter 0.2s ease;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));
 }
 
 .loader{
@@ -60,9 +63,9 @@ body::before{
 }
 
 h1{color:white}
-
 p{color:#fff;margin-bottom:20px}
 
+/* BUTTON */
 .link{
   display:flex;align-items:center;justify-content:center;gap:10px;
   padding:14px;margin:10px 0;border-radius:20px;
@@ -73,7 +76,7 @@ p{color:#fff;margin-bottom:20px}
   transition:0.3s;
 }
 
-/* BRAND COLORS */
+/* BRAND COLOR */
 .link:nth-child(2){color:#E1306C}
 .link:nth-child(3){color:#1DB954}
 .link:nth-child(4){color:#25D366}
@@ -101,12 +104,6 @@ canvas{position:absolute;top:0;left:0;z-index:1}
 <div class="loader" id="loader">Loading...</div>
 <div class="cursor" id="cursor"></div>
 <canvas id="particles"></canvas>
-
-<audio id="music" loop>
-  <source src="https://files.catbox.moe/6q3x1b.mp3" type="audio/mpeg">
-</audio>
-
-<button id="musicBtn" onclick="toggleMusic()" style="position:fixed;top:20px;right:20px;z-index:10;padding:10px 15px;border:none;border-radius:10px;background:rgba(0,0,0,0.5);color:white;cursor:pointer;">▶️</button>
 
 <div class="container">
   <div class="profile">
@@ -139,7 +136,10 @@ canvas{position:absolute;top:0;left:0;z-index:1}
     <i class="fa-brands fa-discord"></i> Discord
   </a>
 
-  <iframe style="border-radius:12px;margin-top:10px" src="https://open.spotify.com/embed/track/59hVbgr8rfYkDbHfr8RcGI" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+  <iframe style="border-radius:12px;margin-top:10px"
+    src="https://open.spotify.com/embed/track/59hVbgr8rfYkDbHfr8RcGI"
+    width="100%" height="80" frameBorder="0">
+  </iframe>
 </div>
 
 <script>
@@ -147,24 +147,37 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('loader').style.display = 'none';
 });
 
+/* CURSOR */
 const cursor = document.getElementById('cursor');
+let lastX = 0;
+
 document.addEventListener('mousemove', e=>{
-cursor.style.left = (e.clientX - 4) + 'px';
-cursor.style.top = (e.clientY - 6) + 'px';
+  cursor.style.left = (e.clientX - 6) + 'px';
+  cursor.style.top = (e.clientY - 6) + 'px';
+
+  if(e.clientX > lastX){
+    cursor.style.transform = "translate(-50%,-50%) scaleX(1)";
+  } else {
+    cursor.style.transform = "translate(-50%,-50%) scaleX(-1)";
+  }
+
+  lastX = e.clientX;
 });
 
+/* PARTICLES */
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
 
-window.addEventListener('resize', () => {
+function resize(){
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-});
+}
+resize();
+window.addEventListener('resize', resize);
 
 let maxParticles = window.innerWidth < 500 ? 25 : 50;
 let particles = [];
+
 for(let i=0;i<maxParticles;i++){
   particles.push({
     x:Math.random()*canvas.width,
@@ -188,6 +201,35 @@ function draw(){
   requestAnimationFrame(draw);
 }
 
+/* CURSOR TRAIL */
+const trails = [];
+for(let i=0;i<8;i++){
+  let t = document.createElement("div");
+  t.style.width = "8px";
+  t.style.height = "8px";
+  t.style.borderRadius = "50%";
+  t.style.background = "rgba(255,255,255,0.6)";
+  t.style.position = "fixed";
+  t.style.pointerEvents = "none";
+  t.style.zIndex = "998";
+  t.style.transition = "opacity 0.3s";
+  document.body.appendChild(t);
+  trails.push(t);
+}
+
+let trailIndex = 0;
+document.addEventListener("mousemove", e=>{
+  const t = trails[trailIndex];
+  t.style.left = e.clientX + "px";
+  t.style.top = e.clientY + "px";
+  t.style.opacity = "1";
+
+  setTimeout(()=>{
+    t.style.opacity = "0";
+  }, 100);
+
+  trailIndex = (trailIndex + 1) % trails.length;
+});
 </script>
 
 </body>
