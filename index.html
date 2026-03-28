@@ -1,14 +1,11 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Javasrajagula</title>
+<title>Javas</title>
 
-<!-- FONT AWESOME -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<!-- FONT JEPANG -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
@@ -17,7 +14,7 @@
 body{
   font-family:'Noto Sans JP', sans-serif;
   height:100vh;
-  background:url('https://i.imgur.com/uAnKyUM.jpeg') no-repeat center/cover;
+  background:url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center/cover;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -26,9 +23,9 @@ body{
 }
 
 .cursor{
-  width:32px;
-  height:32px;
-  background:url('https://cdn.custom-cursor.com/packs/3475/meme-pop-cat-pack.png') no-repeat center/contain;
+  width:50px;
+  height:50px;
+  background:url('https://i.imgur.com/dyMjhsM.png') no-repeat center/contain;
   position:fixed;
   pointer-events:none;
   transform:translate(-50%,-50%);
@@ -64,10 +61,7 @@ body::before{
 
 h1{color:white}
 
-p{
-  color:#fff;
-  margin-bottom:20px;
-}
+p{color:#fff;margin-bottom:20px}
 
 .link{
   display:flex;align-items:center;justify-content:center;gap:10px;
@@ -79,9 +73,18 @@ p{
   transition:0.3s;
 }
 
+/* BRAND COLORS */
+.link:nth-child(2){color:#E1306C}
+.link:nth-child(3){color:#1DB954}
+.link:nth-child(4){color:#25D366}
+.link:nth-child(5){color:#1877F2}
+.link:nth-child(6){color:#fff}
+.link:nth-child(7){color:#5865F2}
+
 .link:hover{
   transform:scale(1.07);
   background:rgba(255,255,255,0.25);
+  box-shadow:0 0 15px rgba(255,255,255,0.4);
 }
 
 canvas{position:absolute;top:0;left:0;z-index:1}
@@ -99,11 +102,17 @@ canvas{position:absolute;top:0;left:0;z-index:1}
 <div class="cursor" id="cursor"></div>
 <canvas id="particles"></canvas>
 
+<audio id="music" loop>
+  <source src="https://files.catbox.moe/6q3x1b.mp3" type="audio/mpeg">
+</audio>
+
+<button id="musicBtn" onclick="toggleMusic()" style="position:fixed;top:20px;right:20px;z-index:10;padding:10px 15px;border:none;border-radius:10px;background:rgba(0,0,0,0.5);color:white;cursor:pointer;">▶️</button>
+
 <div class="container">
   <div class="profile">
     <img src="https://i.imgur.com/Ho4R7Ph.jpeg">
     <h1>Javas</h1>
-    <p>フリーレン：旅の終わりの先へ </p>
+    <p>フリーレン：旅の終わりの先へ</p>
   </div>
 
   <a class="link" href="https://www.instagram.com/javasrajagula14/?__pwa=1#" target="_blank">
@@ -129,16 +138,19 @@ canvas{position:absolute;top:0;left:0;z-index:1}
   <a class="link" href="https://discord.gg/74TPHMb8" target="_blank">
     <i class="fa-brands fa-discord"></i> Discord
   </a>
+
+  <iframe style="border-radius:12px;margin-top:10px" src="https://open.spotify.com/embed/track/59hVbgr8rfYkDbHfr8RcGI" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 </div>
 
 <script>
-window.onload = ()=>{
-  document.getElementById('loader').style.display='none';
-}
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById('loader').style.display = 'none';
+});
+
 const cursor = document.getElementById('cursor');
 document.addEventListener('mousemove', e=>{
-  cursor.style.left = e.clientX+'px';
-  cursor.style.top = e.clientY+'px';
+cursor.style.left = (e.clientX - 4) + 'px';
+cursor.style.top = (e.clientY - 6) + 'px';
 });
 
 const canvas = document.getElementById('particles');
@@ -146,8 +158,14 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+let maxParticles = window.innerWidth < 500 ? 25 : 50;
 let particles = [];
-for(let i=0;i<50;i++){
+for(let i=0;i<maxParticles;i++){
   particles.push({
     x:Math.random()*canvas.width,
     y:Math.random()*canvas.height,
@@ -170,7 +188,6 @@ function draw(){
   requestAnimationFrame(draw);
 }
 
-draw();
 </script>
 
 </body>
