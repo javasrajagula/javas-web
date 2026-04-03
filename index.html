@@ -1,3 +1,6 @@
+Index · HTML
+Salin
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -59,7 +62,7 @@
       touch-action: manipulation;
       background: #08061a;
     }
-
+ 
     body {
       font-family: 'Poppins', sans-serif;
       background: transparent;
@@ -71,16 +74,24 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-
+ 
     body::before {
       content: '';
       position: fixed;
-      inset: 0;
+      /* inset negatif agar tepi blur tidak kelihatan terpotong */
+      inset: -30px;
       z-index: 0;
       pointer-events: none;
       background: #08061a url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center / cover;
       transform: translateZ(0);
-      will-change: transform;
+    }
+ 
+    /* Mobile: blur langsung ke foto background sebagai pengganti
+       backdrop-filter yang dinonaktifkan di mobile */
+    @media (hover: none) and (pointer: coarse) {
+      body::before {
+        filter: blur(24px) saturate(1.2);
+      }
     }
  
     /* Touch devices: restore default cursor */
@@ -930,4 +941,4 @@
   </script>
  
 </body>
-</html>
+</html>tml>
