@@ -59,32 +59,31 @@ Salin
  
     html {
       scroll-behavior: smooth;
-      /* Cegah zoom saat double-tap di iOS */
       touch-action: manipulation;
+      /* Background di html: cara paling kompatibel di semua browser.
+         html selalu setinggi viewport, tidak ada masalah iOS fixed/scroll. */
+      background: #08061a url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center / cover;
+      background-attachment: fixed;
     }
- 
+
+    /* Mobile: background-attachment:fixed tidak diakselerasi GPU di iOS/Android.
+       Tanpa fixed, gambar tetap cover dan tidak scroll bersama konten. */
+    @media (hover: none) and (pointer: coarse) {
+      html {
+        background-attachment: scroll;
+      }
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
-      /* background-attachment: fixed tidak performa di mobile — gunakan pseudo-element sebagai gantinya */
-      background: #08061a;
+      background: transparent;
       min-height: 100vh;
-      min-height: -webkit-fill-available; /* iOS Safari fix */
+      min-height: -webkit-fill-available;
       color: var(--text-primary);
       overflow-x: hidden;
       position: relative;
-      /* Akselerasi GPU */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-    }
- 
-    /* Background image via pseudo-element agar fixed tidak lemot di mobile */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center / cover;
-      z-index: 0;
-      will-change: transform;
     }
  
     /* Touch devices: restore default cursor */
