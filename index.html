@@ -57,18 +57,7 @@
     html {
       scroll-behavior: smooth;
       touch-action: manipulation;
-      /* Background di html: cara paling kompatibel di semua browser.
-         html selalu setinggi viewport, tidak ada masalah iOS fixed/scroll. */
-      background: #08061a url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center / cover;
-      background-attachment: fixed;
-    }
-
-    /* Mobile: background-attachment:fixed tidak diakselerasi GPU di iOS/Android.
-       Tanpa fixed, gambar tetap cover dan tidak scroll bersama konten. */
-    @media (hover: none) and (pointer: coarse) {
-      html {
-        background-attachment: scroll;
-      }
+      background: #08061a;
     }
 
     body {
@@ -81,6 +70,17 @@
       position: relative;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: #08061a url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center / cover;
+      transform: translateZ(0);
+      will-change: transform;
     }
  
     /* Touch devices: restore default cursor */
