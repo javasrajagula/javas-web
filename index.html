@@ -1,32 +1,44 @@
+Index · HTML
+Salin
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Javas with Advanced Animations & Interactive Experience. フリーレン：旅の終わりの先へ">
   <meta name="keywords" content="Javas, Portfolio, Interactive, Bio, Premium Design">
   <meta name="author" content="Javas">
   <meta name="theme-color" content="#000000">
-
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Javas">
   <meta property="og:description" content="Javas - フリーレン：旅の終わりの先へ">
   <meta property="og:image" content="https://i.imgur.com/Ho4R7Ph.jpeg">
-
+ 
   <link rel="icon" href="https://i.imgur.com/Ho4R7Ph.jpeg">
   <title>Javas</title>
-
+ 
+  <!-- Preconnect untuk performa -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+ 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-
+ 
   <style>
     *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
-
+ 
     :root {
       --primary: #7c6be8;
       --secondary: #b3a8ff;
@@ -38,19 +50,43 @@
       --glow: rgba(124, 107, 232, 0.45);
       --text-primary: #ffffff;
       --text-secondary: rgba(179, 168, 255, 0.9);
+      /* Safe area untuk notch/gesture bar iPhone */
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
     }
-
-    html { scroll-behavior: smooth; }
-
+ 
+    html {
+      scroll-behavior: smooth;
+      /* Cegah zoom saat double-tap di iOS */
+      touch-action: manipulation;
+    }
+ 
     body {
       font-family: 'Poppins', sans-serif;
-      background: url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center / cover fixed;
+      /* background-attachment: fixed tidak performa di mobile — gunakan pseudo-element sebagai gantinya */
+      background: #08061a;
       min-height: 100vh;
+      min-height: -webkit-fill-available; /* iOS Safari fix */
       color: var(--text-primary);
       overflow-x: hidden;
       position: relative;
+      /* Akselerasi GPU */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-
+ 
+    /* Background image via pseudo-element agar fixed tidak lemot di mobile */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url('https://i.imgur.com/y42rCO1.jpeg') no-repeat center / cover;
+      z-index: 0;
+      will-change: transform;
+    }
+ 
     /* Touch devices: restore default cursor */
     @media (hover: none) and (pointer: coarse) {
       body { cursor: auto !important; }
@@ -58,74 +94,92 @@
       * { cursor: auto; }
       a, button, [role="button"] { cursor: pointer; }
     }
-
+ 
     /* Desktop only: hide cursor */
     @media (hover: hover) and (pointer: fine) {
       body { cursor: none; }
       a, button { cursor: none; }
     }
-
+ 
     /* ===== GLASSMORPHISM OVERLAY ===== */
     .glass-overlay {
       position: fixed;
       inset: 0;
-      backdrop-filter: blur(28px) saturate(1.2);
+      z-index: 1;
+      pointer-events: none;
       background: linear-gradient(
         160deg,
         rgba(8, 6, 26, 0.72) 0%,
         rgba(20, 12, 60, 0.65) 50%,
         rgba(8, 6, 26, 0.78) 100%
       );
-      z-index: 1;
-      pointer-events: none;
     }
-
-    /* ===== ANIMATED NOISE GRAIN ===== */
-    .glass-overlay::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      opacity: 0.35;
-      pointer-events: none;
+ 
+    /* backdrop-filter hanya untuk desktop (mahal di mobile) */
+    @media (hover: hover) and (pointer: fine) {
+      .glass-overlay {
+        backdrop-filter: blur(28px) saturate(1.2);
+      }
     }
-
+ 
+    /* Noise grain — dinonaktifkan di mobile untuk hemat GPU */
+    @media (hover: hover) and (pointer: fine) {
+      .glass-overlay::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        opacity: 0.35;
+        pointer-events: none;
+      }
+    }
+ 
     /* ===== FLOATING ORBS ===== */
     .orb {
       position: fixed;
       border-radius: 50%;
-      filter: blur(80px);
       pointer-events: none;
       z-index: 1;
-      animation: orbDrift 18s ease-in-out infinite alternate;
     }
+ 
+    /* Animasi orb hanya di desktop; mobile pakai static blur */
+    @media (hover: hover) and (pointer: fine) {
+      .orb {
+        filter: blur(80px);
+        animation: orbDrift 18s ease-in-out infinite alternate;
+      }
+      .orb-1 { animation-duration: 22s; }
+      .orb-2 { animation-duration: 17s; animation-delay: -8s; }
+      .orb-3 { animation-duration: 14s; animation-delay: -4s; }
+    }
+ 
+    @media (hover: none) and (pointer: coarse) {
+      .orb { filter: blur(60px); }
+    }
+ 
     .orb-1 {
       width: 420px; height: 420px;
       background: radial-gradient(circle, rgba(108,92,231,0.22) 0%, transparent 70%);
       top: -100px; left: -100px;
-      animation-duration: 22s;
     }
     .orb-2 {
       width: 320px; height: 320px;
       background: radial-gradient(circle, rgba(0,206,201,0.18) 0%, transparent 70%);
       bottom: -80px; right: -60px;
-      animation-duration: 17s;
-      animation-delay: -8s;
     }
     .orb-3 {
       width: 200px; height: 200px;
       background: radial-gradient(circle, rgba(255,118,117,0.14) 0%, transparent 70%);
       top: 40%; left: 60%;
-      animation-duration: 14s;
-      animation-delay: -4s;
     }
+ 
     @keyframes orbDrift {
       0%   { transform: translate(0px, 0px) scale(1); }
       33%  { transform: translate(40px, -30px) scale(1.08); }
       66%  { transform: translate(-20px, 50px) scale(0.95); }
       100% { transform: translate(30px, 20px) scale(1.03); }
     }
-
+ 
     /* ===== LOADER ===== */
     .loader-container {
       position: fixed;
@@ -142,7 +196,7 @@
       opacity: 0;
       visibility: hidden;
     }
-
+ 
     .loader-ring {
       position: relative;
       width: 72px;
@@ -168,7 +222,7 @@
       border-left-color: rgba(255,118,117,0.3);
       animation: spin 0.9s linear infinite reverse;
     }
-
+ 
     .loader-dot {
       position: absolute;
       top: 50%; left: 50%;
@@ -178,12 +232,12 @@
       transform: translate(-50%, -50%);
       animation: dotPulse 1.2s ease-in-out infinite;
     }
-
+ 
     @keyframes dotPulse {
       0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.7; }
       50% { transform: translate(-50%,-50%) scale(1.5); opacity: 1; }
     }
-
+ 
     .loader-text {
       color: var(--secondary);
       font-size: 0.85rem;
@@ -192,10 +246,10 @@
       text-transform: uppercase;
       animation: pulse 1.6s ease-in-out infinite;
     }
-
+ 
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
-
+ 
     /* ===== CUSTOM CURSOR (desktop only) ===== */
     .cursor {
       width: 24px;
@@ -224,10 +278,8 @@
       border-color: var(--accent);
       background: rgba(255,118,117,0.08);
     }
-    .cursor.active::after {
-      opacity: 0;
-    }
-
+    .cursor.active::after { opacity: 0; }
+ 
     .cursor-trail {
       position: fixed;
       pointer-events: none;
@@ -235,12 +287,12 @@
       z-index: 9996;
       transform: translate(-50%,-50%);
     }
-
+ 
     /* ===== THEME TOGGLE ===== */
     .theme-toggle {
       position: fixed;
-      top: 24px;
-      right: 24px;
+      top: calc(24px + var(--safe-top));
+      right: calc(24px + var(--safe-right));
       z-index: 500;
       width: 50px;
       height: 50px;
@@ -255,6 +307,9 @@
       justify-content: center;
       transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      /* Touch target minimum 44x44 */
+      min-width: 44px;
+      min-height: 44px;
     }
     .theme-toggle:hover {
       transform: scale(1.12) rotate(18deg);
@@ -262,36 +317,41 @@
       border-color: var(--primary);
       box-shadow: 0 8px 30px var(--glow);
     }
-
+    /* Feedback tap di mobile */
+    .theme-toggle:active {
+      transform: scale(0.93);
+    }
+ 
     /* ===== MAIN CONTENT ===== */
     .wrapper {
       position: relative;
       z-index: 2;
       min-height: 100vh;
+      min-height: -webkit-fill-available;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 70px 20px 40px;
+      padding: calc(70px + var(--safe-top)) calc(20px + var(--safe-right)) calc(40px + var(--safe-bottom)) calc(20px + var(--safe-left));
     }
-
+ 
     .container {
       text-align: center;
       width: 100%;
       max-width: 480px;
     }
-
+ 
     /* ===== PROFILE SECTION ===== */
     .profile {
       margin-bottom: 38px;
     }
-
+ 
     .profile-wrapper {
       position: relative;
       width: 140px;
       height: 140px;
       margin: 0 auto 22px;
     }
-
+ 
     /* Spinning gradient ring */
     .profile-ring {
       position: absolute;
@@ -315,12 +375,12 @@
       border-radius: 50%;
       background: #0a0820;
     }
-
+ 
     @keyframes ringRotate {
       to { transform: rotate(360deg); }
     }
-
-    /* Glow halo */
+ 
+    /* Glow halo — hanya aktif di desktop */
     .profile-glow {
       position: absolute;
       inset: -14px;
@@ -328,13 +388,17 @@
       background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
       opacity: 0;
       z-index: 0;
-      animation: glowPulse 3.5s ease-in-out infinite;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .profile-glow {
+        animation: glowPulse 3.5s ease-in-out infinite;
+      }
     }
     @keyframes glowPulse {
       0%,100% { opacity: 0; transform: scale(0.92); }
       50%      { opacity: 0.55; transform: scale(1.08); }
     }
-
+ 
     .profile img {
       width: 140px;
       height: 140px;
@@ -344,14 +408,19 @@
       display: block;
       position: relative;
       z-index: 2;
-      animation: profileFloat 5s ease-in-out infinite;
       filter: drop-shadow(0 8px 24px rgba(108,92,231,0.5));
+      /* Floating hanya di desktop */
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .profile img {
+        animation: profileFloat 5s ease-in-out infinite;
+      }
     }
     @keyframes profileFloat {
       0%,100% { transform: translateY(0); }
       50%      { transform: translateY(-12px); }
     }
-
+ 
     .profile h1 {
       font-size: 3.2rem;
       font-weight: 800;
@@ -364,7 +433,7 @@
       line-height: 1.1;
       animation: fadeSlideUp 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s backwards;
     }
-
+ 
     .profile p {
       font-size: 0.95rem;
       color: var(--text-secondary);
@@ -373,12 +442,12 @@
       text-transform: uppercase;
       animation: fadeSlideUp 0.7s ease 0.35s backwards;
     }
-
+ 
     @keyframes fadeSlideUp {
       from { opacity: 0; transform: translateY(22px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
+ 
     /* ===== SOCIAL LINKS ===== */
     .links-container {
       display: flex;
@@ -386,7 +455,7 @@
       gap: 12px;
       margin-bottom: 28px;
     }
-
+ 
     .link {
       position: relative;
       display: flex;
@@ -399,7 +468,7 @@
       border-radius: 16px;
       background: var(--glass);
       border: 1.5px solid var(--glass-border);
-      backdrop-filter: blur(12px);
+      /* backdrop-filter di link hanya untuk desktop */
       transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
                   background 0.3s ease,
                   border-color 0.3s ease,
@@ -409,16 +478,26 @@
       animation: fadeSlideUp 0.6s ease backwards;
       box-shadow: 0 2px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
       text-align: left;
+      /* Pastikan touch target cukup besar */
+      min-height: 54px;
+      /* Akselerasi GPU untuk animasi */
+      will-change: transform;
+      /* Hapus delay 300ms click di mobile */
+      touch-action: manipulation;
     }
-
-    .link:nth-child(1) { animation-delay: 0.4s; }
-    .link:nth-child(2) { animation-delay: 0.5s; }
-    .link:nth-child(3) { animation-delay: 0.6s; }
-    .link:nth-child(4) { animation-delay: 0.7s; }
-    .link:nth-child(5) { animation-delay: 0.8s; }
-    .link:nth-child(6) { animation-delay: 0.9s; }
-
-    /* Shimmer sweep */
+ 
+    @media (hover: hover) and (pointer: fine) {
+      .link { backdrop-filter: blur(12px); }
+    }
+ 
+    .link:nth-child(1) { animation-delay: 0.1s; }
+    .link:nth-child(2) { animation-delay: 0.18s; }
+    .link:nth-child(3) { animation-delay: 0.26s; }
+    .link:nth-child(4) { animation-delay: 0.34s; }
+    .link:nth-child(5) { animation-delay: 0.42s; }
+    .link:nth-child(6) { animation-delay: 0.5s; }
+ 
+    /* Shimmer sweep — hanya desktop */
     .link::before {
       content: '';
       position: absolute;
@@ -429,11 +508,13 @@
       transition: left 0.5s ease;
       pointer-events: none;
     }
-    .link:hover::before,
-    .link:focus-visible::before {
-      left: 140%;
+    @media (hover: hover) and (pointer: fine) {
+      .link:hover::before,
+      .link:focus-visible::before {
+        left: 140%;
+      }
     }
-
+ 
     /* Colored left accent bar */
     .link::after {
       content: '';
@@ -451,22 +532,26 @@
       opacity: 1;
       transform: scaleY(1);
     }
-
-    .link:hover,
-    .link:focus-visible {
-      transform: translateY(-5px) translateX(3px);
-      background: var(--glass-hover);
-      border-color: rgba(124,107,232,0.5);
-      box-shadow: 0 14px 36px rgba(0,0,0,0.3), 0 0 0 1px rgba(124,107,232,0.2);
-      outline: none;
+ 
+    @media (hover: hover) and (pointer: fine) {
+      .link:hover,
+      .link:focus-visible {
+        transform: translateY(-5px) translateX(3px);
+        background: var(--glass-hover);
+        border-color: rgba(124,107,232,0.5);
+        box-shadow: 0 14px 36px rgba(0,0,0,0.3), 0 0 0 1px rgba(124,107,232,0.2);
+        outline: none;
+      }
     }
-
-    /* Active tap feedback for mobile */
+ 
+    /* Active tap feedback untuk mobile — lebih responsif */
     .link:active {
       transform: scale(0.97);
-      background: rgba(124,107,232,0.15);
+      background: rgba(124,107,232,0.18);
+      border-color: rgba(124,107,232,0.4);
+      transition-duration: 0.1s;
     }
-
+ 
     .link-icon-wrap {
       display: flex;
       align-items: center;
@@ -479,20 +564,24 @@
       flex-shrink: 0;
       transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease;
     }
-    .link:hover .link-icon-wrap,
+    @media (hover: hover) and (pointer: fine) {
+      .link:hover .link-icon-wrap {
+        transform: scale(1.12) rotate(-5deg);
+        background: rgba(124,107,232,0.2);
+      }
+    }
     .link:active .link-icon-wrap {
-      transform: scale(1.12) rotate(-5deg);
       background: rgba(124,107,232,0.2);
     }
-
+ 
     .link i {
       font-size: 1.15rem;
       transition: filter 0.3s ease;
     }
-    .link:hover i {
-      filter: drop-shadow(0 0 6px currentColor);
+    @media (hover: hover) and (pointer: fine) {
+      .link:hover i { filter: drop-shadow(0 0 6px currentColor); }
     }
-
+ 
     .link-arrow {
       margin-left: auto;
       font-size: 0.75rem;
@@ -502,11 +591,20 @@
       color: var(--secondary);
       flex-shrink: 0;
     }
-    .link:hover .link-arrow {
-      opacity: 1;
-      transform: translateX(0);
+    @media (hover: hover) and (pointer: fine) {
+      .link:hover .link-arrow {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
-
+    /* Tampilkan arrow selalu di mobile */
+    @media (hover: none) and (pointer: coarse) {
+      .link-arrow {
+        opacity: 0.5;
+        transform: translateX(0);
+      }
+    }
+ 
     /* Per-brand accent colors */
     .link[data-brand="instagram"] { --link-color: #e1306c; }
     .link[data-brand="spotify"]   { --link-color: #1db954; }
@@ -514,14 +612,14 @@
     .link[data-brand="facebook"]  { --link-color: #1877f2; }
     .link[data-brand="github"]    { --link-color: #c9d1d9; }
     .link[data-brand="discord"]   { --link-color: #5865f2; }
-
+ 
     .link[data-brand] .link-icon-wrap {
       background: color-mix(in srgb, var(--link-color, var(--primary)) 12%, transparent);
       border-color: color-mix(in srgb, var(--link-color, var(--primary)) 25%, transparent);
     }
     .link[data-brand] i { color: var(--link-color, inherit); }
     .link[data-brand]::after { background: var(--link-color, var(--primary)); }
-
+ 
     /* ===== SPOTIFY EMBED ===== */
     .spotify-container {
       margin-top: 8px;
@@ -534,11 +632,13 @@
       transition: transform 0.4s ease, box-shadow 0.4s ease;
       display: block;
     }
-    .spotify-container:hover iframe {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 55px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,107,232,0.25);
+    @media (hover: hover) and (pointer: fine) {
+      .spotify-container:hover iframe {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 55px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,107,232,0.25);
+      }
     }
-
+ 
     /* ===== FOOTER ===== */
     footer {
       position: relative;
@@ -546,7 +646,7 @@
       text-align: center;
       color: rgba(179,168,255,0.5);
       font-size: 0.82rem;
-      padding: 24px 20px 32px;
+      padding: 24px 20px calc(32px + var(--safe-bottom));
       border-top: 1px solid rgba(255,255,255,0.07);
       margin-top: 50px;
       letter-spacing: 0.5px;
@@ -557,18 +657,21 @@
       margin: 0 8px;
       transition: color 0.3s ease;
       position: relative;
+      /* Touch target */
+      padding: 8px 4px;
+      display: inline-block;
     }
     footer a::after {
       content: '';
       position: absolute;
-      bottom: -2px; left: 0;
+      bottom: 6px; left: 0;
       width: 0; height: 1px;
       background: var(--primary);
       transition: width 0.3s ease;
     }
     footer a:hover { color: white; }
     footer a:hover::after { width: 100%; }
-
+ 
     /* ===== LIGHT MODE ===== */
     body.light-mode .glass-overlay {
       background: linear-gradient(160deg,
@@ -597,61 +700,82 @@
     body.light-mode footer { color: rgba(108,92,231,0.5); }
     body.light-mode footer a { color: var(--primary); }
     body.light-mode .link-icon-wrap { background: rgba(108,92,231,0.1); }
-
-    /* ===== RESPONSIVE ===== */
+ 
+    /* ===== RESPONSIVE — MOBILE ===== */
     @media (max-width: 480px) {
-      .wrapper { padding: 64px 16px 36px; }
+      .wrapper { padding: calc(64px + var(--safe-top)) calc(16px + var(--safe-right)) calc(36px + var(--safe-bottom)) calc(16px + var(--safe-left)); }
       .profile h1 { font-size: 2.6rem; }
       .profile p  { font-size: 0.85rem; letter-spacing: 1.8px; }
       .profile-wrapper { width: 120px; height: 120px; }
       .profile img { width: 120px; height: 120px; }
-      .link { padding: 13px 18px; font-size: 0.95rem; border-radius: 14px; }
-      .link-icon-wrap { width: 34px; height: 34px; }
-      .theme-toggle { width: 44px; height: 44px; top: 16px; right: 16px; }
+      .link { padding: 13px 18px; font-size: 0.95rem; border-radius: 14px; min-height: 52px; }
+      .link-icon-wrap { width: 36px; height: 36px; }
+      .theme-toggle { width: 46px; height: 46px; top: calc(16px + var(--safe-top)); right: calc(16px + var(--safe-right)); }
       .spotify-container iframe { height: 72px !important; }
+      .links-container { gap: 10px; }
+    }
+ 
+    /* Landscape mode di mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .wrapper { padding-top: calc(16px + var(--safe-top)); padding-bottom: calc(16px + var(--safe-bottom)); align-items: flex-start; }
+      .profile { margin-bottom: 20px; }
+      .profile-wrapper { width: 80px; height: 80px; margin-bottom: 12px; }
+      .profile img { width: 80px; height: 80px; }
+      .profile h1 { font-size: 1.8rem; }
+      .profile p { font-size: 0.75rem; letter-spacing: 1px; }
+      .links-container { gap: 8px; margin-bottom: 16px; }
+      .link { padding: 10px 16px; min-height: 44px; }
+    }
+ 
+    /* Reduce motion untuk pengguna yang request-nya */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
-
 <body>
-
+ 
   <!-- GLASS OVERLAY -->
   <div class="glass-overlay"></div>
-
+ 
   <!-- FLOATING ORBS -->
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
-
+ 
   <!-- LOADER -->
   <div class="loader-container" id="loader">
     <div class="loader-ring"><div class="loader-dot"></div></div>
     <div class="loader-text">JAVAS</div>
   </div>
-
+ 
   <!-- CUSTOM CURSOR (hidden on touch) -->
   <div class="cursor" id="cursor"></div>
-
+ 
   <!-- THEME TOGGLE -->
   <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode" aria-label="Toggle theme">
     <i class="fas fa-moon"></i>
   </button>
-
+ 
   <!-- MAIN WRAPPER -->
   <div class="wrapper">
     <div class="container">
-
+ 
       <!-- PROFILE -->
       <div class="profile">
         <div class="profile-wrapper">
           <div class="profile-glow"></div>
           <div class="profile-ring"></div>
-          <img src="https://i.imgur.com/Ho4R7Ph.jpeg" alt="Javas" loading="lazy">
+          <img src="https://i.imgur.com/Ho4R7Ph.jpeg" alt="Javas" loading="eager" fetchpriority="high">
         </div>
         <h1>JAVAS</h1>
         <p>フリーレン：旅の終わりの先へ</p>
       </div>
-
+ 
       <!-- SOCIAL LINKS -->
       <div class="links-container">
         <a class="link" data-brand="instagram" href="https://www.instagram.com/javasrajagula14" target="_blank" rel="noopener noreferrer">
@@ -659,38 +783,38 @@
           <span>Instagram</span>
           <i class="fas fa-arrow-right link-arrow"></i>
         </a>
-
+ 
         <a class="link" data-brand="spotify" href="https://open.spotify.com/playlist/2g1jFgBzMVW1fmHMqreV0s" target="_blank" rel="noopener noreferrer">
           <div class="link-icon-wrap"><i class="fab fa-spotify"></i></div>
           <span>Spotify Playlist</span>
           <i class="fas fa-arrow-right link-arrow"></i>
         </a>
-
+ 
         <a class="link" data-brand="whatsapp" href="https://wa.me/6285338123425" target="_blank" rel="noopener noreferrer">
           <div class="link-icon-wrap"><i class="fab fa-whatsapp"></i></div>
           <span>WhatsApp</span>
           <i class="fas fa-arrow-right link-arrow"></i>
         </a>
-
+ 
         <a class="link" data-brand="facebook" href="https://www.facebook.com/javas.265377" target="_blank" rel="noopener noreferrer">
           <div class="link-icon-wrap"><i class="fab fa-facebook"></i></div>
           <span>Facebook</span>
           <i class="fas fa-arrow-right link-arrow"></i>
         </a>
-
+ 
         <a class="link" data-brand="github" href="https://github.com/javasrajagula" target="_blank" rel="noopener noreferrer">
           <div class="link-icon-wrap"><i class="fab fa-github"></i></div>
           <span>GitHub</span>
           <i class="fas fa-arrow-right link-arrow"></i>
         </a>
-
+ 
         <a class="link" data-brand="discord" href="https://discord.gg/74TPHMb8" target="_blank" rel="noopener noreferrer">
           <div class="link-icon-wrap"><i class="fab fa-discord"></i></div>
           <span>Discord Server</span>
           <i class="fas fa-arrow-right link-arrow"></i>
         </a>
       </div>
-
+ 
       <!-- SPOTIFY EMBED -->
       <div class="spotify-container">
         <iframe
@@ -701,39 +825,40 @@
           loading="lazy">
         </iframe>
       </div>
-
+ 
     </div>
   </div>
-
+ 
   <!-- FOOTER -->
   <footer>
     <p>© 2026 Javas &nbsp;|&nbsp; <a href="https://github.com/javasrajagula" target="_blank" rel="noopener">Source Code</a></p>
   </footer>
-
+ 
   <script>
     // ===== DETECT TOUCH DEVICE =====
     const isTouchDevice = () => window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-
-    // ===== LOADER =====
+ 
+    // ===== LOADER — lebih cepat di mobile =====
     window.addEventListener('load', () => {
       const loader = document.getElementById('loader');
-      setTimeout(() => loader.classList.add('hidden'), 2200);
+      // Mobile: loader singkat (1200ms), desktop: 2200ms
+      const delay = isTouchDevice() ? 1200 : 2200;
+      setTimeout(() => loader.classList.add('hidden'), delay);
     });
-
+ 
     // ===== CUSTOM CURSOR (desktop only) =====
     const cursor = document.getElementById('cursor');
-
+ 
     if (!isTouchDevice()) {
       let mouseX = 0, mouseY = 0, lastX = 0, lastY = 0;
-      let rafCursor;
-
+ 
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
         cursor.style.left = mouseX + 'px';
         cursor.style.top  = mouseY + 'px';
       });
-
+ 
       // Cursor trail
       setInterval(() => {
         if (Math.abs(mouseX - lastX) > 4 || Math.abs(mouseY - lastY) > 4) {
@@ -756,34 +881,33 @@
           lastX = mouseX; lastY = mouseY;
         }
       }, 28);
-
+ 
       // Hover effects
       document.querySelectorAll('.link, .theme-toggle').forEach(el => {
         el.addEventListener('mouseenter', () => cursor.classList.add('active'));
         el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
       });
-
-      // Hide cursor when leaving window
+ 
       document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
       document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
     }
-
+ 
     // ===== THEME TOGGLE =====
     const themeToggle = document.getElementById('themeToggle');
     const savedTheme  = localStorage.getItem('theme') || 'dark';
-
+ 
     if (savedTheme === 'light') {
       document.body.classList.add('light-mode');
       themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
     }
-
+ 
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
       const isLight = document.body.classList.contains('light-mode');
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
       themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
     });
-
+ 
     // ===== LINK RIPPLE EFFECT (touch & click) =====
     document.querySelectorAll('.link').forEach(link => {
       link.addEventListener('pointerdown', (e) => {
@@ -793,21 +917,21 @@
         const ripple = document.createElement('span');
         ripple.style.cssText = `
           position:absolute; border-radius:50%; pointer-events:none;
-          background:rgba(255,255,255,0.15);
+          background:rgba(255,255,255,0.18);
           width:8px; height:8px;
           left:${x - 4}px; top:${y - 4}px;
           transform:scale(1); opacity:1;
-          transition: transform 0.5s ease, opacity 0.5s ease;
+          transition: transform 0.45s ease, opacity 0.45s ease;
         `;
         link.appendChild(ripple);
         requestAnimationFrame(() => {
           ripple.style.transform = `scale(${Math.max(rect.width, rect.height) * 0.4})`;
           ripple.style.opacity = '0';
         });
-        setTimeout(() => ripple.remove(), 520);
+        setTimeout(() => ripple.remove(), 470);
       });
     });
   </script>
-
+ 
 </body>
 </html>
